@@ -15,14 +15,14 @@ const userSchema = new Schema({
     type: String,
     required: true
   },
-  uploadImages: [{
+  uploadedImages: [{
     type: ObjectId,
     ref: 'image'
   }],
-  buyedImages: {
+  buyedImages: [{
     type: ObjectId,
     ref: 'image'
-  }
+  }]
 }, {
   timestamps: {
     createdAt: 'created_at',

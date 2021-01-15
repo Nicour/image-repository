@@ -14,12 +14,16 @@ const imageSchema = new Schema({
   author: {
     type: String,
     required: true
-  }
+  },
   description: {
     type: String,
     required: true
   },
   imageUrl: {
+    type: String,
+    required: true
+  },
+  publicId: {
     type: String,
     required: true
   },
