@@ -30,7 +30,7 @@ router.post('/', isLoggedIn(), async (req, res, next) => {
       publicId: result.public_id
     };
     const createImageInDatabase = await Image.create(newImage);
-    const addImageToUserImagesList = await User.update({ username: req.session.user.username}, { $push: { uploadedImages: createImageInDatabase._id } }, { new: true })
+    const addImageToUserImagesList = await User.updateOne({ username: req.session.user.username}, { $push: { uploadedImages: createImageInDatabase._id } }, { new: true })
     res.status(200).json({
       message: "success",
       result: result
@@ -44,15 +44,30 @@ router.post('/', isLoggedIn(), async (req, res, next) => {
   });
 });
 
-router.post('/delete/:public_id', (req, res, next) => {
-  const publicId = req.params;
-  cloudinary.uploader.destroy(publicId)
-  .then(result => {
-    res.send(result)
-  })
-  .catch(error => {
-    res.send(error)
-  })
+router.delete('/:id', isLoggedIn(), async (req, res, next) => {
+  const { id } = req.params;
+  const image = await Image.findById(id);
+  if(image.owner === req.session.user.username) {
+    const deleteImageFromDatabase = await Image.findByIdAndDelete(id);
+    const deleteImageFromUserImagesList = await User.updateOne({ username: req.session.user.username}, { $pull: { uploadedImages: id } }, { new: true })
+    cloudinary.uploader.destroy(image.publicId)
+    .then(result => {
+      res.status(200).json({
+      message: "success",
+      result: result
+    });
+    })
+    .catch(error => {
+      res.status(500).json({
+      message: "failure",
+      error: error
+    });
+    })
+  } else {
+    res.status(403).json({
+      message: "The image can by deleted only by the owner"
+    })
+  }
 });
 
 module.exports = router;
