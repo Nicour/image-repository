@@ -3,8 +3,8 @@
 # STACK
 
 + Node.js
-+ Express
-+ MongoDb
++ Express.js
++ MongoDB
 + Cloudinary
 
 # HOW TO RUN THE APP
