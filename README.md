@@ -10,8 +10,9 @@
 # HOW TO RUN THE APP
 
 + Clone the repo
-+ in the root folder run: npm install
-+ in the root folder run: npm run start
++ In the root folder run: npm install
++ In the root folder paste the .env file that you will find in the Application
++ In the root folder run: npm run start
 
 The app runs on port 5000
 
