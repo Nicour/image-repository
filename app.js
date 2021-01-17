@@ -10,6 +10,7 @@ require('dotenv').config();
 
 const authRouter = require('./routes/auth');
 const imageRouter = require('./routes/image');
+const userRouter = require('./routes/user');
 
 mongoose
 .connect(process.env.MONGODB_URI, {
@@ -52,6 +53,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/auth', authRouter);
 app.use('/image', imageRouter);
+app.use('/user', userRouter);
 
 app.use(function(req, res, next) {
   next(createError(404));

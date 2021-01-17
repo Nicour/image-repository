@@ -8,7 +8,7 @@ require('dotenv').config();
 const User = require('../models/user');
 const Image = require('../models/image');
 
-const { isLoggedIn, isNotLoggedIn } = require('../helpers/Middlewares');
+const { isLoggedIn } = require('../helpers/Middlewares');
 
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
@@ -75,7 +75,7 @@ router.delete('/:id', isLoggedIn(), async (req, res, next) => {
   } 
 });
 
-router.get('/', isLoggedIn(), async (req, res, next) => {
+router.get('/all', isLoggedIn(), async (req, res, next) => {
   try {
     const listOfAllImages = await Image.find()
     res.status(200).json({ 
@@ -86,7 +86,7 @@ router.get('/', isLoggedIn(), async (req, res, next) => {
   }
 });
 
-router.get('/:id', isLoggedIn(), async (req, res, next) => {
+router.get('/byId/:id', isLoggedIn(), async (req, res, next) => {
   const { id } = req.params
   try {
     const image = await Image.findById(id);
@@ -96,6 +96,54 @@ router.get('/:id', isLoggedIn(), async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-})
+});
+
+router.get('/byCategory/:category', isLoggedIn(), async (req, res, next) => {
+  const { category } = req.params
+  try {
+    const images = await Image.find({ category: category });
+    res.status(200).json({ 
+      images: images
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get('/byAuthor/:author', isLoggedIn(), async (req, res, next) => {
+  const { author } = req.params
+  try {
+    const images = await Image.find({ author: author });
+    res.status(200).json({ 
+      images: images
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get('/notSelled', isLoggedIn(), async (req, res, next) => {
+  try {
+    const images = await Image.find({ selled: false });
+    res.status(200).json({ 
+      images: images
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.post('/buy', isLoggedIn(), async (req, res, next) => {
+  const { imageId } = req.body;
+  try {
+    const setSelledToTrue = await Image.updateOne({ _id: imageId}, { $set: { selled: true } }, { new: true });
+    const addImageToBuyedList = await User.updateOne({ username: req.session.user.username}, { $push: { buyedImages: imageId } }, { new: true });
+    res.status(200).json({ 
+      message: "Image succesfully buyed"
+    });
+  } catch (error) {
+    next(error);
+  }
+});
 
 module.exports = router;

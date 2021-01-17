@@ -17,11 +17,11 @@ const userSchema = new Schema({
   },
   uploadedImages: [{
     type: ObjectId,
-    ref: 'image'
+    ref: 'Image'
   }],
   buyedImages: [{
     type: ObjectId,
-    ref: 'image'
+    ref: 'Image'
   }]
 }, {
   timestamps: {
