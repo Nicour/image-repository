@@ -4,7 +4,8 @@
 
 + Node.js
 + Express
-+ Axios
++ MongoDb
++ Cloudinary
 
 # HOW TO RUN THE APP
 
